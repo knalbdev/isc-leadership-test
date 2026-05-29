@@ -12,8 +12,12 @@
 // ── Config ────────────────────────────────────────────────────────────────
 const CONFIG_KEY = '_isc_sheets_url';
 
+// Paste your deployed Apps Script URL here so all devices (including Tim OSIS)
+// can read the leaderboard without manual configuration.
+const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbxm1lRFqwj_2m4VUEa8iteYllWiq--zLfTLhtj2ixWbrL2A2Z3mCDt5Kgjep72jq0gNKQ/exec';
+
 export function getScriptUrl() {
-  return localStorage.getItem(CONFIG_KEY) || '';
+  return localStorage.getItem(CONFIG_KEY) || DEFAULT_URL;
 }
 
 export function setScriptUrl(url) {
