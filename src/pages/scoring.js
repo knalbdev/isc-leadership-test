@@ -284,11 +284,11 @@ export function render(container, group) {
                   <label class="cursor-pointer">
                     <input type="radio" name="status" value="${opt.value}" class="sr-only peer"
                            onchange="scoring.onStatusChange()">
-                    <div class="flex flex-col items-center gap-1.5 rounded-xl border-2 border-stone-200 p-3
+                    <div class="flex flex-col items-center gap-2 rounded-xl border-2 border-stone-200 p-3.5
                                 transition-all duration-150 text-center text-stone-400
                                 hover:border-stone-300 hover:text-stone-500
                                 ${opt.divCls}">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         ${opt.svgPath}
                       </svg>
                       <span class="text-xs font-semibold leading-tight">${opt.label}</span>
@@ -359,15 +359,15 @@ export function render(container, group) {
               <!-- Criteria blocks -->
               <div class="flex flex-col gap-3">
                 ${CRITERIA.map(item => `
-                  <div class="rounded-xl border border-stone-100 bg-stone-50/60 p-3.5">
+                  <div class="rounded-xl border border-stone-100 bg-stone-50/60 p-4">
                     <div class="flex items-start justify-between mb-2">
                       <div class="flex-1 min-w-0 pr-2">
                         <p class="text-sm font-semibold text-stone-800 leading-tight">${item.label}</p>
                         <p class="text-xs text-stone-400 mt-0.5">${item.desc}</p>
                       </div>
                       <span id="val-${item.key}"
-                        class="flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-lg
-                               bg-white border border-stone-200 text-base font-black text-stone-800
+                        class="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg
+                               bg-white border border-stone-200 text-lg font-black text-stone-800
                                tabular-nums shadow-sm">10</span>
                     </div>
 
@@ -404,7 +404,7 @@ export function render(container, group) {
                   <div class="bg-gradient-to-r from-teal-600 to-teal-500 px-4 py-2.5 flex items-center justify-between">
                     <span class="text-sm font-semibold text-white">Total Nilai</span>
                     <div class="flex items-baseline gap-1">
-                      <span id="sum-total" class="text-2xl font-black text-white tabular-nums">${CRITERIA.length * 10}</span>
+                      <span id="sum-total" class="text-3xl font-black text-white tabular-nums">${CRITERIA.length * 10}</span>
                       <span class="text-sm text-teal-200">/ 100</span>
                     </div>
                   </div>

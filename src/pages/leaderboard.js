@@ -10,18 +10,18 @@ import { showConfirm } from './login.js';
 function renderOsisHeader() {
   return `
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-stone-200 shadow-sm">
-      <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <div class="flex items-center gap-2.5">
           <img src="/logo.png" alt="ISC" onerror="this.style.display='none'"
-            class="h-8 w-auto max-w-[36px] object-contain">
+            class="h-10 w-auto max-w-[80px] object-contain">
           <div>
             <span class="text-sm font-semibold text-stone-800">Leadership Test 2026/2027</span>
             <span class="ml-2 inline-flex items-center gap-1 rounded-full bg-sky-50 border border-sky-200 px-2 py-0.5 text-[11px] font-semibold text-sky-700">Tim OSIS</span>
           </div>
         </div>
         <button onclick="handleLogout()"
-          class="flex items-center gap-1.5 text-xs text-stone-500 hover:text-rose-600 transition-colors px-2 py-1 rounded-lg hover:bg-rose-50">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          class="flex items-center gap-1.5 text-sm text-stone-500 hover:text-rose-600 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-rose-50">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
           </svg>
           Keluar
@@ -192,10 +192,10 @@ export function renderTable(role) {
 
     return `
       <tr class="border-b border-stone-50 hover:bg-stone-50/60 transition-colors">
-        <td class="px-4 py-3">
+        <td class="px-4 py-3.5">
           ${isHadir ? rankBadge(hadirRank) : `<span class="text-stone-300 text-sm">—</span>`}
         </td>
-        <td class="px-4 py-3">
+        <td class="px-4 py-3.5">
           <p class="font-semibold text-stone-900 leading-tight">${entry.name}</p>
           <span class="level-badge level-${entry.level?.toLowerCase() ?? 'smp'} mt-0.5 inline-flex">${entry.level ?? ''}</span>
         </td>

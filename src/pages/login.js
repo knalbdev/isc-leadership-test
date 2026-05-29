@@ -268,7 +268,7 @@ export function render(container) {
                  hover:border-teal-300 hover:shadow-lg hover:shadow-teal-50 hover:-translate-y-0.5
                  transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
           <div class="flex items-start gap-4">
-            <div class="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-teal-50 to-teal-100
+            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-teal-50 to-teal-100
                         flex items-center justify-center text-teal-700 transition-colors border border-teal-200
                         group-hover:from-teal-100 group-hover:to-teal-200">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

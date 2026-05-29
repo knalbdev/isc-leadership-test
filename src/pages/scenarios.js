@@ -24,7 +24,7 @@ export function render(container) {
             return `
               <div class="rounded-2xl border ${c.border} ${c.bg} overflow-hidden shadow-sm">
                 <div class="flex items-center gap-3 px-5 pt-5 pb-3">
-                  <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base font-black text-white shadow-sm bg-gradient-to-br ${c.num}">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-black text-white shadow-sm bg-gradient-to-br ${c.num}">
                     ${s.id}
                   </div>
                   <div>
