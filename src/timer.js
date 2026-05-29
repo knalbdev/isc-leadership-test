@@ -68,9 +68,24 @@ export function reset() {
 }
 
 export function init() {
-  seconds = TOTAL;
-  running = false;
+  // Clear any orphaned interval from the previous DOM mount
   clearInterval(interval);
+  interval = null;
+
+  // If the timer was running when the user navigated away, restart counting
+  if (running && seconds > 0) {
+    interval = setInterval(() => {
+      seconds--;
+      renderDisplay();
+      if (seconds <= 0) {
+        clearInterval(interval);
+        running = false;
+        renderBtn();
+        showToast('Waktu wawancara habis!', 'warning', 5000);
+      }
+    }, 1000);
+  }
+
   renderDisplay();
   renderBtn();
 }

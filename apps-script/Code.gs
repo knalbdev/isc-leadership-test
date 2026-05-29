@@ -162,6 +162,12 @@ function doGet(e) {
       return respond({ status: 'ok' }, callback);
     }
 
+    if (action === 'resetAll') {
+      const lastRow = sheet.getLastRow();
+      if (lastRow > 1) sheet.deleteRows(2, lastRow - 1);
+      return respond({ status: 'ok', message: 'All entries deleted' }, callback);
+    }
+
     return respond({ status: 'error', message: `Unknown action: ${action}` }, callback);
 
   } catch (err) {

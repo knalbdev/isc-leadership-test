@@ -7,7 +7,8 @@ import * as leaderboard from './pages/leaderboard.js';
 import { render as renderLogin, openAuthModal, showConfirm } from './pages/login.js';
 import { render as renderGroups } from './pages/groups.js';
 import { render as renderScenarios } from './pages/scenarios.js';
-import { getScriptUrl, setScriptUrl, isConfigured, ping } from './utils/sheets.js';
+import { getScriptUrl, setScriptUrl, isConfigured, ping, resetAll } from './utils/sheets.js';
+import { clearAll } from './utils/storage.js';
 
 const app = () => document.getElementById('app');
 
@@ -132,6 +133,22 @@ window.openSettings = () => {
           <button onclick="window._settingsClose()" class="btn btn-ghost btn-sm">Batal</button>
           <button onclick="window._settingsSave()" class="btn btn-primary btn-sm flex-1">Simpan</button>
         </div>
+
+        <!-- Danger zone -->
+        <div class="mt-5 pt-4 border-t border-rose-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wider text-rose-500 mb-2">Danger Zone</p>
+          <button onclick="window._settingsReset()"
+            class="w-full flex items-center justify-center gap-2 rounded-xl border border-rose-200
+                   bg-rose-50 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-100 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+            Reset Semua Data Penilaian
+          </button>
+          <p class="text-[11px] text-stone-400 mt-1.5 text-center">
+            Hapus semua nilai dari perangkat ini &amp; Google Sheets. Tidak bisa dibatalkan.
+          </p>
+        </div>
       </div>
     </div>
   `;
@@ -145,6 +162,28 @@ window.openSettings = () => {
   };
 
   window._settingsClose = () => el.remove();
+
+  window._settingsReset = async () => {
+    el.remove();
+    const ok = await showConfirm(
+      'Reset Semua Data Penilaian?',
+      'Semua nilai akan dihapus permanen dari perangkat ini <strong>dan</strong> Google Sheets. Tindakan ini tidak bisa dibatalkan.',
+      'Hapus Semua', 'Batal'
+    );
+    if (!ok) return;
+
+    clearAll();
+    const sheetOk = await resetAll();
+
+    showToast(
+      sheetOk
+        ? 'Semua data berhasil direset!'
+        : 'Data lokal direset. Gagal reset Sheet — pastikan koneksi aktif.',
+      sheetOk ? 'success' : 'warning'
+    );
+
+    navigate(state.page ?? 'groups');
+  };
 
   window._settingsTest = async () => {
     const urlInput = document.getElementById('settingsUrlInput');

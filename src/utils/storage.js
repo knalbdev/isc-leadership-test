@@ -15,6 +15,10 @@ export function getById(id) {
   return getAll()[id] ?? null;
 }
 
+export function clearAll() {
+  localStorage.removeItem(KEY);
+}
+
 /**
  * @typedef {{
  *   id: number; name: string; level: string;

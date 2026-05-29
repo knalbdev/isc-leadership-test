@@ -14,7 +14,7 @@ const CONFIG_KEY = '_isc_sheets_url';
 
 // Paste your deployed Apps Script URL here so all devices (including Tim OSIS)
 // can read the leaderboard without manual configuration.
-const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbxm1lRFqwj_2m4VUEa8iteYllWiq--zLfTLhtj2ixWbrL2A2Z3mCDt5Kgjep72jq0gNKQ/exec';
+const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbzauIL46Bqkngg8ykHl-xdjNCeO16d3jeIquBuwhx1buC30uc1Q32PLBcGzzCofuF6v/exec';
 
 export function getScriptUrl() {
   return localStorage.getItem(CONFIG_KEY) || DEFAULT_URL;
@@ -83,6 +83,17 @@ export async function ping() {
   if (!isConfigured()) return false;
   try {
     const res = await jsonpFetch(`${getScriptUrl()}?action=ping`, 6000);
+    return res?.status === 'ok';
+  } catch {
+    return false;
+  }
+}
+
+/** Delete all data rows from Google Sheets (keeps header row). */
+export async function resetAll() {
+  if (!isConfigured()) return false;
+  try {
+    const res = await jsonpFetch(`${getScriptUrl()}?action=resetAll`, 10000);
     return res?.status === 'ok';
   } catch {
     return false;
