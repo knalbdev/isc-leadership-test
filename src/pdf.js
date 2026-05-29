@@ -159,49 +159,48 @@ export async function generatePDF(candidateId) {
     CRITERIA.forEach(c => {
       const value = entry[c.key] ?? 0;
 
-      // Card
-      rect(doc, margin, y - 1, W - margin * 2, 15, C.bg, 3);
-      // Left accent strip
-      rect(doc, margin, y - 1, 3, 15, C.teal2, 1.5);
+      // Row card — compact 12 mm height
+      rect(doc, margin, y, W - margin * 2, 12, C.bg, 3);
+      // Accent strip inset 1 mm top/bottom (avoids fighting the card's rounded corners)
+      rect(doc, margin + 0.5, y + 1, 2, 10, C.teal2, 1);
 
       // Label
-      t(doc, c.label, margin + 7, y + 6, { size: 9, color: C.black });
+      t(doc, c.label, margin + 6, y + 8, { size: 9, color: C.black });
 
-      // Progress bar
-      const bx = 118, bw = 54, bh = 3, by = y + 3.5;
-      rect(doc, bx, by, bw, bh, C.line, 1.5);
-      const fill = Math.max(1, (value / c.max) * bw);
-      rect(doc, bx, by, fill, bh, C.teal, 1.5);
+      // Progress bar (thin, 2.5 mm)
+      const bx = 113, bw = 55, bh = 2.5, by = y + 4.5;
+      rect(doc, bx, by, bw, bh, C.line, 1);
+      if (value > 0) {
+        rect(doc, bx, by, Math.max(1.5, (value / c.max) * bw), bh, C.teal, 1);
+      }
 
-      // Score
-      t(doc, `${value}`, W - margin - 8, y + 7.5, { size: 12, color: C.teal, bold: true, align: 'right' });
-      t(doc, `/${c.max}`, W - margin - 1, y + 7.5, { size: 7.5, color: C.muted });
+      // Score — same baseline as label
+      t(doc, `${value}`, W - margin - 9, y + 8, { size: 11, color: C.teal, bold: true, align: 'right' });
+      t(doc, `/${c.max}`, W - margin - 2, y + 8, { size: 7, color: C.muted });
 
-      y += 17;
+      y += 13; // 12 mm row + 1 mm gap
     });
 
-    // Total box — 32 mm so /MAX_TOTAL stays well inside
-    y += 5;
-    rect(doc, margin, y, W - margin * 2, 32, C.teal, 4);
+    // Total box — score and /MAX right-aligned to same anchor → clean stacked column
+    y += 4;
+    rect(doc, margin, y, W - margin * 2, 30, C.teal, 4);
 
     t(doc, 'TOTAL NILAI', margin + 8, y + 10, { size: 8.5, color: C.tealL, bold: true });
     const [gradeTxt, gradeLetter] = grade(entry.totalNilai);
-    t(doc, `${gradeTxt} (${gradeLetter})`, margin + 8, y + 20, { size: 10, color: [180, 230, 225] });
+    t(doc, `${gradeTxt} (${gradeLetter})`, margin + 8, y + 19, { size: 10, color: [180, 230, 225] });
 
-    // Score (baseline y+24, cap-top ≈ y+17 — well below grade line)
-    t(doc, `${entry.totalNilai}`, W - margin - 13, y + 24, { size: 28, color: C.white, bold: true, align: 'right' });
-    // /MAX inside box: baseline y+28, bottom ≈ y+28.6, box ends y+32 → 3.4 mm clearance
-    t(doc, `/ ${MAX_TOTAL}`, W - margin - 3, y + 28, { size: 8.5, color: [160, 210, 205] });
+    const rx = W - margin - 5; // right-edge anchor (5 mm padding from box right)
+    t(doc, `${entry.totalNilai}`, rx, y + 22, { size: 26, color: C.white, bold: true, align: 'right' });
+    // /MAX baseline y+27, bottom ≈ y+27.6, box ends y+30 → 2.4 mm clearance ✓
+    t(doc, `/ ${MAX_TOTAL}`, rx, y + 27, { size: 8.5, color: [160, 210, 205], align: 'right' });
 
-    y += 40;
+    y += 38;
 
   } else {
-    rect(doc, margin, y, W - margin * 2, 22, C.bg, 4);
-    // Left accent strip for "not present" box
-    rect(doc, margin, y, 3, 22, C.rose, 1.5);
-    t(doc, 'Peserta tidak mengikuti sesi wawancara.', W / 2, y + 10, { size: 10, color: C.stone, align: 'center' });
-    t(doc, `Status: ${entry.status}`, W / 2, y + 17, { size: 8.5, color: C.muted, align: 'center' });
-    y += 30;
+    rect(doc, margin, y, W - margin * 2, 20, C.bg, 4);
+    t(doc, 'Peserta tidak mengikuti sesi wawancara.', W / 2, y + 9, { size: 10, color: C.stone, align: 'center' });
+    t(doc, `Status: ${entry.status}`, W / 2, y + 16, { size: 8.5, color: C.muted, align: 'center' });
+    y += 28;
   }
 
   // ── Notes ─────────────────────────────────────────────────────────────
