@@ -316,7 +316,7 @@ export function render(container) {
 
       </div>
 
-      <p class="mt-8 text-xs text-stone-400">62 kandidat · 10 kelompok · SMP &amp; SMK</p>
+      <p class="mt-8 text-xs text-stone-400">Tia's Space</p>
     </div>
 
     <style>

@@ -44,7 +44,7 @@ export function render(container, role) {
         <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 class="text-xl font-bold text-stone-900">Leaderboard</h2>
-            <p class="text-sm text-stone-500 mt-0.5">Ranking total nilai · Sakit & tidak hadir di bawah</p>
+            <p class="text-sm text-stone-500 mt-0.5">Ranking total nilai</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="window.__exportExcel()"
