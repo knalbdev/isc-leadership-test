@@ -99,3 +99,26 @@ export async function resetAll() {
     return false;
   }
 }
+
+/** Push all local entries to Sheets, replacing whatever is there. Returns count pushed or false on failure. */
+export async function syncToSheets(entries) {
+  if (!isConfigured()) return false;
+  try {
+    const resetOk = await resetAll();
+    if (!resetOk) return false;
+
+    const list = Object.values(entries);
+    // Push in batches of 5 to avoid overwhelming GAS concurrent write limit
+    for (let i = 0; i < list.length; i += 5) {
+      await Promise.allSettled(
+        list.slice(i, i + 5).map(entry => {
+          const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(entry)))));
+          return jsonpFetch(`${getScriptUrl()}?action=save&data=${encoded}`, 10000);
+        })
+      );
+    }
+    return list.length;
+  } catch {
+    return false;
+  }
+}

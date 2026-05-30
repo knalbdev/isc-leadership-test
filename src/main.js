@@ -7,8 +7,8 @@ import * as leaderboard from './pages/leaderboard.js';
 import { render as renderLogin, openAuthModal, showConfirm } from './pages/login.js';
 import { render as renderGroups } from './pages/groups.js';
 import { render as renderScenarios } from './pages/scenarios.js';
-import { getScriptUrl, setScriptUrl, isConfigured, ping, resetAll, fetchAll } from './utils/sheets.js';
-import { clearAll, save } from './utils/storage.js';
+import { getScriptUrl, setScriptUrl, isConfigured, ping, resetAll, fetchAll, syncToSheets } from './utils/sheets.js';
+import { clearAll, save, getAll } from './utils/storage.js';
 
 const app = () => document.getElementById('app');
 
@@ -134,19 +134,29 @@ window.openSettings = () => {
           <button onclick="window._settingsSave()" class="btn btn-primary btn-sm flex-1">Simpan</button>
         </div>
 
-        <!-- Sync from Sheets -->
+        <!-- Sync section -->
         <div class="mt-4 pt-4 border-t border-teal-100">
           <p class="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-2">Sinkronisasi</p>
-          <button onclick="window._settingsPull()"
-            class="w-full flex items-center justify-center gap-2 rounded-xl border border-teal-200
-                   bg-teal-50 py-2 text-sm font-semibold text-teal-700 hover:bg-teal-100 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            Tarik Data dari Sheets ke Lokal
-          </button>
+          <div class="flex flex-col gap-2">
+            <button onclick="window._settingsPush()"
+              class="w-full flex items-center justify-center gap-2 rounded-xl border border-sky-200
+                     bg-sky-50 py-2 text-sm font-semibold text-sky-700 hover:bg-sky-100 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+              </svg>
+              Kirim Data Lokal → Sheets
+            </button>
+            <button onclick="window._settingsPull()"
+              class="w-full flex items-center justify-center gap-2 rounded-xl border border-teal-200
+                     bg-teal-50 py-2 text-sm font-semibold text-teal-700 hover:bg-teal-100 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              Tarik Data Sheets → Lokal
+            </button>
+          </div>
           <p class="text-[11px] text-stone-400 mt-1.5 text-center">
-            Ganti data lokal dengan isi Sheets. Gunakan untuk perbaiki data yang tidak sinkron.
+            Kirim: lokal timpa Sheets. Tarik: Sheets timpa lokal.
           </p>
         </div>
 
@@ -178,6 +188,30 @@ window.openSettings = () => {
   };
 
   window._settingsClose = () => el.remove();
+
+  window._settingsPush = async () => {
+    el.remove();
+    const entries = getAll();
+    const count = Object.keys(entries).length;
+    if (count === 0) { showToast('Tidak ada data lokal untuk dikirim.', 'warning'); return; }
+
+    const ok = await showConfirm(
+      'Kirim Data Lokal ke Sheets?',
+      `Semua data di Sheets akan ditimpa dengan <strong>${count} entri</strong> dari perangkat ini. Proses ini mungkin butuh beberapa detik.`,
+      'Kirim', 'Batal'
+    );
+    if (!ok) return;
+
+    showToast(`Mengirim ${count} data ke Sheets… mohon tunggu.`, 'info');
+    const result = await syncToSheets(entries);
+
+    if (result === false) {
+      showToast('Gagal terhubung ke Sheets. Cek koneksi dan URL.', 'error');
+    } else {
+      showToast(`${result} data berhasil dikirim ke Sheets!`, 'success');
+      navigate(state.page ?? 'groups');
+    }
+  };
 
   window._settingsPull = async () => {
     el.remove();

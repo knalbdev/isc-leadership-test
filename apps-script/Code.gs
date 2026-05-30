@@ -101,7 +101,7 @@ function getAllEntries(sheet) {
     });
 
     // Coerce numeric fields
-    ['id', 'groupId', 'inisiatif', 'keputusan', 'menggerakkan', 'totalNilai'].forEach(k => {
+    ['id', 'groupId', 'inisiatif', 'keputusan', 'menggerakkan', 'komunikasi', 'integritas', 'totalNilai'].forEach(k => {
       if (entry[k] !== null) entry[k] = Number(entry[k]);
     });
 
