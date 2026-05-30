@@ -7,8 +7,8 @@ import * as leaderboard from './pages/leaderboard.js';
 import { render as renderLogin, openAuthModal, showConfirm } from './pages/login.js';
 import { render as renderGroups } from './pages/groups.js';
 import { render as renderScenarios } from './pages/scenarios.js';
-import { getScriptUrl, setScriptUrl, isConfigured, ping, resetAll } from './utils/sheets.js';
-import { clearAll } from './utils/storage.js';
+import { getScriptUrl, setScriptUrl, isConfigured, ping, resetAll, fetchAll } from './utils/sheets.js';
+import { clearAll, save } from './utils/storage.js';
 
 const app = () => document.getElementById('app');
 
@@ -134,6 +134,22 @@ window.openSettings = () => {
           <button onclick="window._settingsSave()" class="btn btn-primary btn-sm flex-1">Simpan</button>
         </div>
 
+        <!-- Sync from Sheets -->
+        <div class="mt-4 pt-4 border-t border-teal-100">
+          <p class="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-2">Sinkronisasi</p>
+          <button onclick="window._settingsPull()"
+            class="w-full flex items-center justify-center gap-2 rounded-xl border border-teal-200
+                   bg-teal-50 py-2 text-sm font-semibold text-teal-700 hover:bg-teal-100 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Tarik Data dari Sheets ke Lokal
+          </button>
+          <p class="text-[11px] text-stone-400 mt-1.5 text-center">
+            Ganti data lokal dengan isi Sheets. Gunakan untuk perbaiki data yang tidak sinkron.
+          </p>
+        </div>
+
         <!-- Danger zone -->
         <div class="mt-5 pt-4 border-t border-rose-100">
           <p class="text-[11px] font-semibold uppercase tracking-wider text-rose-500 mb-2">Danger Zone</p>
@@ -162,6 +178,26 @@ window.openSettings = () => {
   };
 
   window._settingsClose = () => el.remove();
+
+  window._settingsPull = async () => {
+    el.remove();
+    const ok = await showConfirm(
+      'Tarik Data dari Sheets?',
+      'Data lokal akan diganti dengan data dari Google Sheets. Entry yang hanya ada di lokal akan terhapus.',
+      'Tarik Data', 'Batal'
+    );
+    if (!ok) return;
+    showToast('Menarik data dari Sheets…', 'info');
+    const sheetsData = await fetchAll();
+    if (!sheetsData || Object.keys(sheetsData).length === 0) {
+      showToast('Gagal terhubung ke Sheets atau tidak ada data. Cek koneksi.', 'error');
+      return;
+    }
+    clearAll();
+    Object.values(sheetsData).forEach(entry => save(entry));
+    showToast(`${Object.keys(sheetsData).length} data berhasil disinkronisasi!`, 'success');
+    navigate(state.page ?? 'groups');
+  };
 
   window._settingsReset = async () => {
     el.remove();

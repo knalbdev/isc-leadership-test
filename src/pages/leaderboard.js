@@ -1,4 +1,8 @@
-import { getAll, save } from '../utils/storage.js';
+import { getAll } from '../utils/storage.js';
+
+// In-memory cache for Tim OSIS sync — never written to localStorage so
+// the assessor's local scores are never overwritten by stale Sheets data.
+let _osisCache = null;
 import { generatePDF } from '../pdf.js';
 import { GROUPS, GROUP_COLORS } from '../data/groups.js';
 import { renderHeader } from './groups.js';
@@ -139,7 +143,7 @@ export function render(container, role) {
     }
     fetchAll().then(sheetsData => {
       if (sheetsData && Object.keys(sheetsData).length > 0) {
-        Object.values(sheetsData).forEach(entry => save(entry));
+        _osisCache = sheetsData; // store in memory only — never touch localStorage
         renderTable(role);
         if (syncEl) {
           syncEl.innerHTML = `<span class="text-emerald-600">✓ Data tersinkronisasi</span>`;
@@ -148,12 +152,12 @@ export function render(container, role) {
       } else {
         if (syncEl) syncEl.innerHTML = '';
       }
-    }).catch(() => { if (syncEl) syncEl && (syncEl.innerHTML = ''); });
+    }).catch(() => { if (syncEl) syncEl.innerHTML = ''; });
   }
 }
 
 export function renderTable(role) {
-  const scores      = getAll();
+  const scores      = (role !== 'assessor' && _osisCache !== null) ? _osisCache : getAll();
   const groupFilter = +($id('filterGroup')?.value ?? 0);
   const search      = ($id('searchInput')?.value ?? '').toLowerCase().trim();
 
